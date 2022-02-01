@@ -1,16 +1,17 @@
+
 export default function Post() {
 	return (
-		<div>posts</div>
+		<div>{post.Title}</div>
 	);
 }
 
 // tell next how many pages there are
 export async function getStaticPaths() {
 	const res = await fetch('http://localhost:1337/api/posts');
-	const data = await res.json();
+	const posts = await res.json();
 
-	const paths = posts.map(post => ({
-		params: { slug: post.Slug }
+	const paths = posts.data.map(post => ({
+		params: { slug: post.attributes.Slug }
 	}));
 
 	return {
@@ -23,5 +24,12 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
 	const { slug } = params;
 
-	const res = await  
+	const res = await fetch(`http://localhost:1337/api/posts?Slug=${slug}`);
+	const data = await res.json();
+	const post = data[0];
+
+
+	return {
+		props: { post }
+	};
 }
